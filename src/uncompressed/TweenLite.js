@@ -860,6 +860,17 @@
 					}
 				}
 				vars.css = css;
+			},
+			_autoArrayProps = function(vars, target) {
+				var arrayProps = {},
+					p;
+				for(p in vars) {
+					if (!_reservedProps[p] && vars[p] instanceof Array) {
+						arrayProps[p] = vars[p];
+						delete vars[p];
+					}
+				}
+				vars.arrayProps = arrayProps;
 			};
 	
 		p = TweenLite.prototype = new Animation();
@@ -1102,6 +1113,9 @@
 			}
 			if (!this.vars.css) if (target.style) if (target !== window && target.nodeType) if (_plugins.css) if (this.vars.autoCSS !== false) { //it's so common to use TweenLite/Max to animate the css of DOM elements, we assume that if the target is a DOM element, that's what is intended (a convenience so that users don't have to wrap things in css:{}, although we still recommend it for a slight performance boost and better specificity). Note: we cannot check "nodeType" on the window inside an iframe.
 				_autoCSS(this.vars, target);
+			}
+			if (_plugins.arrayProps) if (!this.vars.arrayProps) {
+				_autoArrayProps(this.vars, target);
 			}
 			for (p in this.vars) {
 				v = this.vars[p];
